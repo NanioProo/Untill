@@ -1,0 +1,90 @@
+#include <iostream>
+#include <string>
+#include <iomanip>
+#include <ctime>
+#include <windows.h>
+#include <sstream>
+
+
+void setColor(int color) {
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
+
+int main() {
+    
+    std::time_t now = std::time(nullptr);
+    std::tm current_tm;
+#if defined(_WIN32) || defined(_WIN64)
+    localtime_s(&current_tm, &now);
+#else
+    localtime_r(&now, &current_tm);
+#endif
+
+   
+    setColor(11); 
+    std::cout << "Today's Date: ";
+    setColor(15);
+    std::cout << std::put_time(&current_tm, "%Y-%m-%d %H:%M:%S") << "\n\n";
+
+    
+    int year, month, day, hour = 0, minute = 0;
+    setColor(10); 
+    std::cout << "Enter your target date (YYYY MM DD [HH MM]):\n> ";
+    setColor(15);
+
+    std::string line;
+    std::getline(std::cin, line);
+    std::istringstream iss(line);
+    iss >> year >> month >> day >> hour >> minute;
+
+ 
+    std::tm target_tm = {};
+    target_tm.tm_year = year - 1900;
+    target_tm.tm_mon = month - 1;
+    target_tm.tm_mday = day;
+    target_tm.tm_hour = hour;
+    target_tm.tm_min = minute;
+    target_tm.tm_sec = 0;
+    target_tm.tm_isdst = -1;
+
+    std::time_t target_time = std::mktime(&target_tm);
+    if (target_time == -1) {
+        setColor(12);
+        std::cerr << "Invalid date or time provided.\n";
+        system("pause");
+        return 1;
+    }
+
+   
+    double seconds = std::difftime(target_time, now);
+    if (seconds < 0) {
+        setColor(14); 
+        std::cout << "\nThat date is already in the past!\n";
+        system("pause");
+        return 0;
+    }
+
+    int total_minutes = static_cast<int>(seconds) / 60;
+    int days = total_minutes / (24 * 60);
+    int hours = (total_minutes % (24 * 60)) / 60;
+    int minutes = total_minutes % 60;
+
+ 
+    setColor(11);
+    std::cout << "\nTarget Date: ";
+    setColor(15);
+    std::cout << std::put_time(&target_tm, "%Y-%m-%d %H:%M:%S") << "\n";
+
+    setColor(13);
+    std::cout << "Time remaining: ";
+    setColor(15);
+    std::cout << days << " days, "
+        << hours << " hrs, "
+        << minutes << " mins\n";
+
+    system("pause");
+    return 0;
+}
+
+
+//credis: nani
