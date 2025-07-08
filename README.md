@@ -19,7 +19,7 @@ This C++ console application allows users to input a future date (with optional 
 | Enter your target date (YYYY MM DD [HH MM]): |
 | > 2025 12 31 23 59                           |
  ----------------------------------------------
----🔧 Requirements: ---
+#🔧 Requirements:
 -Windows OS (uses <windows.h> for color and system("pause"))
 
 -C++11 or higher.
